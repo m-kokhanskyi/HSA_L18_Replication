@@ -17,3 +17,8 @@
 
 3 Якшо видаляєш середню колонку реплікація продовжкється, але в останню колоку пишиться данні з середньої.
 Думав допоможе  формат з заданими колонками, але ні: ```insert into code (first, middle, last) values ($(date +%s+$RANDOM),$(date +%s+$RANDOM),$(date +%s+$RANDOM))```
+
+
+
+
+>source: https://github.com/vbabak/docker-mysql-master-slave
