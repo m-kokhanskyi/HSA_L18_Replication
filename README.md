@@ -1,78 +1,19 @@
-Docker MySQL master-slave replication 
-========================
-
-MySQL 8.0 master-slave replication with using Docker. 
-
-Previous version based on MySQL 5.7 is available in [mysql5.7](https://github.com/vbabak/docker-mysql-master-slave/tree/mysql5.7) branch.
-
-## Run
-
-To run this examples you will need to start containers with "docker-compose" 
-and after starting setup replication. See commands inside ./build.sh. 
-
-#### Create 2 MySQL containers with master-slave row-based replication 
+#### Create 3 MySQL containers with master-slave row-based replication 
 
 ```bash
 ./build.sh
 ```
 
-#### Make changes to master
-
 ```bash
-docker exec mysql_master sh -c "export MYSQL_PWD=111; mysql -u root mydb -e 'create table code(code int); insert into code values (100), (200)'"
+./insert.sh
 ```
 
-#### Read changes from slave
 
-```bash
-docker exec mysql_slave sh -c "export MYSQL_PWD=111; mysql -u root mydb -e 'select * from code \G'"
-```
+><b>Рузультат</b> (3 колонки були в БД)
 
-## Troubleshooting
+1 Зупинив один слейв потім відновив, всі данні підтягнулися 
 
-#### Check Logs
+2 Якщо видаляєш останню колонку то реплікація продовжується, але без останньої колонки
 
-```bash
-docker-compose logs
-```
-
-#### Start containers in "normal" mode
-
-> Go through "build.sh" and run command step-by-step.
-
-#### Check running containers
-
-```bash
-docker-compose ps
-```
-
-#### Clean data dir
-
-```bash
-rm -rf ./master/data/*
-rm -rf ./slave/data/*
-```
-
-#### Run command inside "mysql_master"
-
-```bash
-docker exec mysql_master sh -c 'mysql -u root -p111 -e "SHOW MASTER STATUS \G"'
-```
-
-#### Run command inside "mysql_slave"
-
-```bash
-docker exec mysql_slave sh -c 'mysql -u root -p111 -e "SHOW SLAVE STATUS \G"'
-```
-
-#### Enter into "mysql_master"
-
-```bash
-docker exec -it mysql_master bash
-```
-
-#### Enter into "mysql_slave"
-
-```bash
-docker exec -it mysql_slave bash
-```
+3 Якшо видаляєш середню колонку реплікація продовжкється, але в останню колоку пишиться данні з середньої.
+Думав допоможе  формат з заданими колонками, але ні: ```insert into code (first, middle, last) values ($(date +%s+$RANDOM),$(date +%s+$RANDOM),$(date +%s+$RANDOM))```
